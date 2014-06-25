@@ -1,7 +1,6 @@
-GradientDistortionUnwarpOnly
-============================
+#GradientDistortionUnwarpOnly
 
-# Script Description
+## Script Description
 
 The GradientDistortionUnwarpOnly.sh script performs "only" Gradient Distortion 
 Correction for unprocessed images found in the "_unproc" resources for a 
