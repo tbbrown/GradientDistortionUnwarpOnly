@@ -179,6 +179,12 @@ unwarp_images() {
 
         done
         
+        # move the generated _gdc.nii.gz files out of the gdc subdirectory up to the main directory
+        mv -v ${working_dir}/*_gdc.nii.gz ${image_dir}
+
+        # remove the working directory with all the unneeded intermediate files
+        rm -rfv ${working_dir}
+        
     done
 }
 
