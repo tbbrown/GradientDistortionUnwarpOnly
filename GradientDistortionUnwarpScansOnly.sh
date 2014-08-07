@@ -5,10 +5,11 @@
 #  Setup the environment
 #
 setup_environment() {
-    export FSLDIR=/nrgpackages/tools.release/fsl-5.0.6-centos6_64
+    #export FSLDIR=/nrgpackages/tools.release/fsl-5.0.6-centos6_64
+    export FSLDIR=/usr/share/fsl/5.0
     . ${FSLDIR}/etc/fslconf/fsl.sh
 
-    export HCPPIPEDIR=/home/NRG/tbrown01/projects/Pipelines
+    export HCPPIPEDIR=/home/tbb/projects/Pipelines
     export HCPPIPEDIR_Global=${HCPPIPEDIR}/global/scripts
     export HCPPIPEDIR_Config=${HCPPIPEDIR}/global/config
 }
@@ -114,7 +115,7 @@ main() {
     log_Msg "copying specified subject directory to output location"
     log_Msg "From: ${subject_dir}"
     log_Msg "To: ${outdir}"
-    cp --recursive --dereference ${subject_dir} ${outdir}
+    cp --verbose --recursive --dereference ${subject_dir} ${outdir}
 
     scans_dir="${outdir}/${subject}/SCANS"
 
@@ -129,6 +130,7 @@ main() {
         log_Msg "image_dir: ${image_dir}"
 
         working_dir=${image_dir}/gdc
+	echo "mkdir -p ${working_dir}/xfms"
         mkdir -p ${working_dir}/xfms
 
         image_files=`ls ${image_dir}/*.nii.gz`
