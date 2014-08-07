@@ -1,4 +1,4 @@
-# Ingore Eclipse Project files
+# Ignore Eclipse Project files
 *.project
 *.buildpath
 *.pydevproject
