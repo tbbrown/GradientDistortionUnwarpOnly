@@ -5,10 +5,12 @@
 #  Setup the environment
 #
 setup_environment() {
-    export FSLDIR=/nrgpackages/tools.release/fsl-5.0.6-centos6_64
+    # export FSLDIR=/nrgpackages/tools.release/fsl-5.0.6-centos6_64
+    export FSLDIR=/usr/share/fsl/5.0
     . ${FSLDIR}/etc/fslconf/fsl.sh
 
-    export HCPPIPEDIR=/home/NRG/tbrown01/projects/Pipelines
+    # export HCPPIPEDIR=/home/NRG/tbrown01/projects/Pipelines
+    export HCPPIPEDIR=/home/tbb/projects/Pipelines
     export HCPPIPEDIR_Global=${HCPPIPEDIR}/global/scripts
     export HCPPIPEDIR_Config=${HCPPIPEDIR}/global/config
 }
