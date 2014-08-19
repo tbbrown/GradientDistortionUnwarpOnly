@@ -5,11 +5,18 @@
 #  Setup the environment
 #
 setup_environment() {
-    #export FSLDIR=/nrgpackages/tools.release/fsl-5.0.6-centos6_64
-    export FSLDIR=/usr/share/fsl/5.0
+    node_indicator=`uname -n | cut -c1-6`
+
+    export FSLDIR=/nrgpackages/tools.release/fsl-5.0.6-centos6_64
+    export HCPPIPEDIR=/home/NRG/tbrown01/projects/Pipelines
+
+    if [ "${node_indicator}" == "ubuntu" ] ; then
+        export FSLDIR=/usr/share/fsl/5.0
+        export HCPPIPEDIR=/home/tbb/projects/Pipelines
+    fi
+
     . ${FSLDIR}/etc/fslconf/fsl.sh
 
-    export HCPPIPEDIR=/home/tbb/projects/Pipelines
     export HCPPIPEDIR_Global=${HCPPIPEDIR}/global/scripts
     export HCPPIPEDIR_Config=${HCPPIPEDIR}/global/config
 }
