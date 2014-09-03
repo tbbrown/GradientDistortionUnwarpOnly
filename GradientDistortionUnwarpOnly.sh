@@ -28,7 +28,7 @@ setup_environment() {
 usage() {
     local scriptName=$(basename ${0})
     echo ""
-    echo "  Usage: ${scriptName} --project=<project-id> --subject=<subject-id> --outdir=<output-directory>"
+    echo "  Usage: ${scriptName} --project=<project-id> --subject=<subject-id> --outdir=<output-directory> [--structuralsonly] [--keepworkingdirs]"
     echo ""
 }
 
@@ -40,6 +40,8 @@ usage() {
 #  ${project} - project id
 #  ${subject} - subject id
 #  ${outdir} - output directory
+#  ${structuralsOnly} - "TRUE" or "FALSE"
+#  ${keepWorkingDirs} - "TRUE" or "FALSE"
 #
 get_options() {
     local scriptName=$(basename ${0})
@@ -49,6 +51,8 @@ get_options() {
     unset project
     unset subject
     unset outdir
+    structuralsOnly="FALSE"
+    keepWorkingDirs="FALSE"
 
     # parse arguments
     local index=0
@@ -63,6 +67,10 @@ get_options() {
                 usage
                 exit 1
                 ;;
+            --structuralsonly)
+                structuralsOnly="TRUE"
+                index=$(( index + 1 ))
+                ;;
             --project=*)
                 project=${argument/*=/""}
                 index=$(( index + 1 ))
@@ -73,6 +81,10 @@ get_options() {
                 ;;
             --outdir=*)
                 outdir=${argument/*=/""}
+                index=$(( index + 1 ))
+                ;;
+            --keepworkingdirs)
+                keepWorkingDirs="TRUE"
                 index=$(( index + 1 ))
                 ;;
             *)
@@ -107,6 +119,8 @@ get_options() {
     echo "   project: ${project}"
     echo "   subject: ${subject}"
     echo "   outdir: ${outdir}"
+    echo "   structuralsOnly: ${structuralsOnly}"
+    echo "   keepWorkingDirs: ${keepWorkingDirs}"
     echo "-- ${scriptName}: Specified command-line options - End --"
 }
 
@@ -191,7 +205,9 @@ unwarp_images() {
         mv -v ${working_dir}/*_gdc.nii.gz ${image_dir}
 
         # remove the working directory with all the unneeded intermediate files
-        rm -rfv ${working_dir}
+        if [ "${keepWorkingDirs}" != "TRUE" ] ; then
+            rm -rfv ${working_dir}
+        fi
         
     done
 }
@@ -205,19 +221,27 @@ main() {
     resources_dir="/data/hcpdb/archive/${project}/arc001/${subject}_3T/RESOURCES"
 
     # gradient unwarp T1w images
+    log_Msg "gradient unwarp T1w images"
     unwarp_images "${resources_dir}/T1w*_unproc"
 
     # gradient unwarp T2w images
+    log_Msg "gradient unwarp T2w images"
     unwarp_images "${resources_dir}/T2w*_unproc"
 
-    # gradient unwarp functional resting state images
-    unwarp_images "${resources_dir}/rfMRI*_unproc"
+    if [ "${structuralsOnly}" != "TRUE" ] ; then
 
-    # gradient unwarp functional task images
-    unwarp_images "${resources_dir}/tfMRI*_unproc"
+        # gradient unwarp functional resting state images
+        log_Msg "gradient unwarp functional resting state images"
+        unwarp_images "${resources_dir}/rfMRI*_unproc"
 
-    # gradient unwarp diffusion imags
-    unwarp_images "${resources_dir}/Diffusion_unproc"
+        # gradient unwarp functional task images
+        log_Msg "gradient unwarp functional task images"
+        unwarp_images "${resources_dir}/tfMRI*_unproc"
+
+        # gradient unwarp diffusion images
+        log_Msg "gradient unwarp diffusion images"
+        unwarp_images "${resources_dir}/Diffusion_unproc"
+    fi
 
     log_Msg "Complete"
 }
